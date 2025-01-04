@@ -2,8 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  const PORT = process.env.API_PORT ?? 80;
+
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.API_PORT ?? 80);
-  console.log(`app running in port ${process.env.API_PORT}`);
+  await app.listen(PORT);
+  console.log(`app running in port ${PORT}`);
 }
 bootstrap();
