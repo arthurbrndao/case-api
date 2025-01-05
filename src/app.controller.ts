@@ -6,7 +6,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getInitialUsers(): string {
+  getInitialUsers(): object {
     return this.appService.getInitialUsers();
   }
 }
