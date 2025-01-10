@@ -2,11 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
-
-interface IInitialUsers {
-  status: number;
-  body: string;
-}
+import { IInitialUser, IInitialUsersResponse } from './types';
 
 @Injectable()
 export class AppService {
@@ -20,10 +16,21 @@ export class AppService {
       const apiUrl = this.configService.get<string>('INITIAL_DATA_API_URL');
 
       const { data } = await firstValueFrom(
-        this.httpService.get<IInitialUsers>(apiUrl),
+        this.httpService.get<IInitialUsersResponse>(apiUrl),
       );
 
-      return JSON.parse(data.body);
+      const initialUsers = JSON.parse(data.body);
+      const parsedInitialUsers: IInitialUser[] = initialUsers.clientes.map(
+        (initialUser) => ({
+          name: initialUser['Nome'],
+          phone: initialUser['Telefone'],
+          email: initialUser['E-mail'],
+          type: initialUser['Tipo'],
+          createdAt: initialUser['Data de Cadastro'],
+        }),
+      );
+
+      return parsedInitialUsers;
     } catch (error) {
       console.log(error);
       return {};
